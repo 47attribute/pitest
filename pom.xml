@@ -313,5 +313,4 @@
 		<maven.failsafe-plugin.version>${surefire.version}</maven.failsafe-plugin.version>
 		<maven.surefire-plugin.version>${surefire.version}</maven.surefire-plugin.version>
 	</properties>
-
 </project>
