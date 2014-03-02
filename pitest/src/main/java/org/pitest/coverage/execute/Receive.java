@@ -88,7 +88,6 @@ final class Receive implements ReceiveStrategy {
     else {
       LOG.info("Test " + cr.getTestUnitDescription().getQualifiedName() + " did not pass coverage! (AWSHI)");
     }
-    //this.handler.apply(createCoverageResult(is, d, hits));
   }
 
   private void readProbeHit(final SafeDataInputStream is,
