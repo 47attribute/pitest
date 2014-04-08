@@ -241,6 +241,13 @@ public class PitMojo extends AbstractPitMojo {
   private boolean               runMutations;
 
   /**
+   * Parameter to set if to run mutations
+   *
+   * @parameter default-value="true" expression="${runMutations}"
+   */
+  private boolean               runMutations;
+
+  /**
    * <i>Internal</i>: Project to interact with.
    * 
    * @parameter expression="${project}"
