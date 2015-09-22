@@ -36,7 +36,7 @@ public class CheckTestHasFailedResultListener implements TestListener {
     if (!this.lastFailingTest.hasSome()) {
       this.lastFailingTest = Option.some(new ArrayList<Description>());
     }
-    this.lastFailingTest.value().add(tr.getDescription());;
+    this.lastFailingTest.value().add(tr.getDescription());
   }
 
   @Override
