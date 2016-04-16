@@ -84,8 +84,7 @@ final class Receive implements ReceiveStrategy {
     CoverageResult cr = createCoverageResult(is, d, hits);
     if (cr.isGreenTest()) {
       this.handler.apply(cr);
-    }
-    else {
+    } else {
       LOG.info("Test " + cr.getTestUnitDescription().getQualifiedName() + " did not pass coverage! (AWSHI)");
     }
   }

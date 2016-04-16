@@ -229,6 +229,12 @@ public class AbstractPitMojo extends AbstractMojo {
   private String                      mutationEngine;
 
   /**
+   * Parameter to set if to run mutations
+   */
+  @Parameter(defaultValue = "true", property = "runMutations")
+  private boolean                   runMutations;
+
+  /**
    * List of additional classpath entries to use when looking for tests and
    * mutable code. These will be used in addition to the classpath with which
    * PIT is launched.
@@ -519,6 +525,10 @@ public class AbstractPitMojo extends AbstractMojo {
 
   public void setJavaExecutable(final String javaExecutable) {
     this.jvm = javaExecutable;
+  }
+
+  public boolean isRunMutations() {
+    return this.runMutations;
   }
 
   public List<String> getAdditionalClasspathElements() {
