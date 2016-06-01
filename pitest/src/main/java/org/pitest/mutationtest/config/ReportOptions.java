@@ -121,7 +121,6 @@ public class ReportOptions {
   private boolean                        includeLaunchClasspath         = true;
 
   private Properties                     properties;
-  private boolean                        shouldRunMutations             = true;
 
   private boolean                        shouldRunMutations             = true;
 
