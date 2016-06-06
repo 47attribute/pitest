@@ -85,7 +85,7 @@ public class MojoToReportOptionsConverter {
     final ReportOptions data = new ReportOptions();
 
     if (this.mojo.getProject().getBuild() != null) {
-      Collection<String> classpaths = this.mojo.getMutationClasspaths();
+      Collection<String> classpaths = this.mojo.getAdditionalClasspathElements();
       if (classpaths == null) {
         classpaths = new ArrayList<String>();
       }
