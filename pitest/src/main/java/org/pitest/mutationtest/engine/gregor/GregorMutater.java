@@ -18,6 +18,7 @@ import static org.pitest.functional.prelude.Prelude.and;
 import static org.pitest.functional.prelude.Prelude.not;
 import static org.pitest.util.Functions.classNameToJVMClassName;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,8 +26,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
 import org.pitest.bytecode.FrameOptions;
 import org.pitest.bytecode.NullVisitor;
 import org.pitest.classinfo.ClassByteArraySource;
@@ -92,6 +99,8 @@ public class GregorMutater implements Mutater {
 
     final PremutationClassInfo classInfo = performPreScan(classToMutate);
 
+    final Set<Integer> lines = new HashSet<Integer>();
+
     final ClassReader first = new ClassReader(classToMutate);
     final NullVisitor nv = new NullVisitor();
     final MutatingClassVisitor mca = new MutatingClassVisitor(nv, context,
@@ -121,6 +130,8 @@ public class GregorMutater implements Mutater {
         .asJavaName());
 
     final PremutationClassInfo classInfo = performPreScan(bytes.value());
+
+    final Set<Integer> lines = new HashSet<Integer>();
 
     final ClassReader reader = new ClassReader(bytes.value());
     final ClassWriter w = new ComputeClassWriter(this.byteSource,
