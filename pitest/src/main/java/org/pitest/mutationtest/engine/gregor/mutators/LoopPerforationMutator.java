@@ -85,6 +85,8 @@ class LoopPerforationMethodVisitor extends MethodVisitor {
       } else {
         this.mv.visitIincInsn(var, increment);
       }
+    } else {
+      this.mv.visitIincInsn(var, increment);
     }
   }
 
