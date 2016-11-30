@@ -14,11 +14,9 @@
  */
 package org.pitest.mutationtest.engine.gregor.mutators;
 
-import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
 import org.pitest.mutationtest.engine.MutationIdentifier;
 import org.pitest.mutationtest.engine.gregor.MethodInfo;
 import org.pitest.mutationtest.engine.gregor.MethodMutatorFactory;
@@ -68,10 +66,11 @@ class LoopPerforationMethodVisitor extends MethodVisitor {
 
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-    this.mv.visitMethodInsn(opcode, owner, name, desc, itf);
     if (owner.equals("edu/illinois/approximute/LoopLabel") && name.equals("label")) {
       this.loopLines.add(this.lastLineNumber);
+      return;
     }
+    this.mv.visitMethodInsn(opcode, owner, name, desc, itf);
   }
 
   @Override
