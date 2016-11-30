@@ -75,7 +75,7 @@ class LoopPerforationMethodVisitor extends MethodVisitor {
 
   @Override
   public void visitIincInsn(final int var, final int increment) {
-    if (loopLines.contains(this.lastLineNumber)) {
+    if (loopLines.contains(this.lastLineNumber) && (increment == 1 || increment == -1)) {
       final MutationIdentifier newId = this.context.registerMutation(
           this.factory, "Changed increment from " + increment + " to "
               + increment * 2);
