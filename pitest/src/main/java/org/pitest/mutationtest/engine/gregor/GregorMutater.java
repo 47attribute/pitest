@@ -18,7 +18,6 @@ import static org.pitest.functional.prelude.Prelude.and;
 import static org.pitest.functional.prelude.Prelude.not;
 import static org.pitest.util.Functions.classNameToJVMClassName;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,14 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
 import org.pitest.bytecode.FrameOptions;
 import org.pitest.bytecode.NullVisitor;
 import org.pitest.classinfo.ClassByteArraySource;
