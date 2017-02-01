@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>pitest-parent</artifactId>
 		<groupId>org.pitest</groupId>
-		<version>1.1.10</version>
+		<version>1.1.10-LOOP</version>
 	</parent>
 	<artifactId>pitest</artifactId>
 	<packaging>jar</packaging>
@@ -296,7 +296,6 @@
 			<version>1.7.5</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 </project>

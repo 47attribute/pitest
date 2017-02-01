@@ -48,6 +48,8 @@ import org.pitest.mutationtest.engine.gregor.mutators.experimental.RemoveIncreme
 import org.pitest.mutationtest.engine.gregor.mutators.experimental.RemoveSwitchMutator;
 import org.pitest.mutationtest.engine.gregor.mutators.experimental.SwitchMutator;
 
+import org.pitest.mutationtest.engine.gregor.mutators.LoopPerforationMutator;
+
 public final class Mutator {
 
   private static final Map<String, Iterable<MethodMutatorFactory>> MUTATORS = new LinkedHashMap<String, Iterable<MethodMutatorFactory>>();
@@ -157,6 +159,9 @@ public final class Mutator {
     addGroup("DEFAULTS", defaults());
     addGroup("STRONGER", stronger());
     addGroup("ALL", all());
+
+    // Experimental loop perforation mutator
+    add("LOOPPERFORATION", LoopPerforationMutator.LOOPPERFORATION_MUTATOR);
   }
 
   public static Collection<MethodMutatorFactory> all() {

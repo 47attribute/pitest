@@ -35,6 +35,8 @@ class MutatingClassVisitor extends ClassVisitor {
   private final Set<MethodMutatorFactory> methodMutators = new HashSet<MethodMutatorFactory>();
   private final PremutationClassInfo      classInfo;
 
+  private final Set<Integer>              loopLines = new HashSet<Integer>();
+
   MutatingClassVisitor(final ClassVisitor delegateClassVisitor,
       final ClassContext context, final F<MethodInfo, Boolean> filter,
       final PremutationClassInfo classInfo,
