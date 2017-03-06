@@ -18,6 +18,10 @@ import static org.pitest.functional.prelude.Prelude.and;
 import static org.pitest.functional.prelude.Prelude.not;
 import static org.pitest.util.Functions.classNameToJVMClassName;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,7 +30,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.pitest.bytecode.FrameOptions;
 import org.pitest.bytecode.NullVisitor;
 import org.pitest.classinfo.ClassByteArraySource;
@@ -92,12 +98,49 @@ public class GregorMutater implements Mutater {
 
     final PremutationClassInfo classInfo = performPreScan(classToMutate);
 
-    final Set<Integer> lines = new HashSet<Integer>();
+    // Get name of the class to be mutated
+    final List<String> nameContainer = new ArrayList<String>();
+    final ClassReader second = new ClassReader(classToMutate);
+    final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+    final ClassVisitor cv = new ClassVisitor(Opcodes.ASM5, cw) {
+      @Override
+      public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        nameContainer.add(name);
+        super.visit(version, access, name, signature, superName, interfaces);
+      }
+    };
+    second.accept(cv, ClassReader.EXPAND_FRAMES);
+    String name = nameContainer.get(0).replace("/", ".");
 
     final ClassReader first = new ClassReader(classToMutate);
     final NullVisitor nv = new NullVisitor();
     final MutatingClassVisitor mca = new MutatingClassVisitor(nv, context,
         filterMethods(), classInfo, this.mutators);
+
+    // Read file from spoon output to determine what are lines with loops, for mutating
+    final Set<Integer> lines = new HashSet<Integer>();
+    try {
+      BufferedReader br = new BufferedReader(new FileReader("/tmp/spoon-out"));
+      try {
+        String s = br.readLine();
+        while (s != null) {
+          // Check if line corresponds to this test class
+          if (s.startsWith(name + ",")) {
+            // Find the line number and add to the set
+            try {
+              int lineNo = Integer.parseInt(s.substring(s.lastIndexOf(':') + 1, s.lastIndexOf(')')));
+              lines.add(lineNo);
+            } catch (NumberFormatException nfe) {
+            }
+          }
+          s = br.readLine();
+        }
+      } finally {
+          br.close();
+      }
+    } catch (IOException ioe) {
+    }
+    mca.addLoopLines(lines);
 
     first.accept(mca, ClassReader.EXPAND_FRAMES);
 
@@ -124,7 +167,19 @@ public class GregorMutater implements Mutater {
 
     final PremutationClassInfo classInfo = performPreScan(bytes.value());
 
-    final Set<Integer> lines = new HashSet<Integer>();
+    // Get name of the class to be mutated
+    final List<String> nameContainer = new ArrayList<String>();
+    final ClassReader second = new ClassReader(bytes.value());
+    final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+    final ClassVisitor cv = new ClassVisitor(Opcodes.ASM5, cw) {
+      @Override
+      public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        nameContainer.add(name);
+        super.visit(version, access, name, signature, superName, interfaces);
+      }
+    };
+    second.accept(cv, ClassReader.EXPAND_FRAMES);
+    String name = nameContainer.get(0).replace("/", ".");
 
     final ClassReader reader = new ClassReader(bytes.value());
     final ClassWriter w = new ComputeClassWriter(this.byteSource,
@@ -132,6 +187,32 @@ public class GregorMutater implements Mutater {
     final MutatingClassVisitor mca = new MutatingClassVisitor(w, context,
         filterMethods(), classInfo, FCollection.filter(this.mutators,
             isMutatorFor(id)));
+
+    // Read file from spoon output to determine what are lines with loops, for mutating
+    final Set<Integer> lines = new HashSet<Integer>();
+    try {
+      BufferedReader br = new BufferedReader(new FileReader("/tmp/spoon-out"));
+      try {
+        String s = br.readLine();
+        while (s != null) {
+          // Check if line corresponds to this test class
+          if (s.startsWith(name + ",")) {
+            // Find the line number and add to the set
+            try {
+              int lineNo = Integer.parseInt(s.substring(s.lastIndexOf(':') + 1, s.lastIndexOf(')')));
+              lines.add(lineNo);
+            } catch (NumberFormatException nfe) {
+            }
+          }
+          s = br.readLine();
+        }
+      } finally {
+          br.close();
+      }
+    } catch (IOException ioe) {
+    }
+    mca.addLoopLines(lines);
+
     reader.accept(mca, ClassReader.EXPAND_FRAMES);
 
     final List<MutationDetails> details = context.getMutationDetails(context

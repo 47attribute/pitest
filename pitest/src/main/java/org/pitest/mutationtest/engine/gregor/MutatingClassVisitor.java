@@ -48,6 +48,10 @@ class MutatingClassVisitor extends ClassVisitor {
     this.classInfo = classInfo;
   }
 
+  public void addLoopLines(Set<Integer> lines) {
+    loopLines.addAll(lines);
+  }
+
   @Override
   public void visit(final int version, final int access, final String name,
       final String signature, final String superName, final String[] interfaces) {
@@ -93,6 +97,11 @@ class MutatingClassVisitor extends ClassVisitor {
 
     MethodVisitor next = methodVisitor;
     for (final MethodMutatorFactory each : this.methodMutators) {
+      // Special check for loop perforation mutator, to add loop lines to
+      if (each instanceof org.pitest.mutationtest.engine.gregor.mutators.LoopPerforationMutator) {
+        org.pitest.mutationtest.engine.gregor.mutators.LoopPerforationMutator lpm = (org.pitest.mutationtest.engine.gregor.mutators.LoopPerforationMutator)each;
+        lpm.setLoopLines(this.loopLines);
+      }
       next = each.create(methodContext, methodInfo, next);
     }
 

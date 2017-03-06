@@ -14,6 +14,9 @@
  */
 package org.pitest.mutationtest.engine.gregor.mutators;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -29,7 +32,7 @@ public enum LoopPerforationMutator implements MethodMutatorFactory {
   @Override
   public MethodVisitor create(final MutationContext context,
       final MethodInfo methodInfo, final MethodVisitor methodVisitor) {
-    return new LoopPerforationMethodVisitor(this, context, methodVisitor);
+    return new LoopPerforationMethodVisitor(this, context, methodVisitor, loopLines);
   }
 
   @Override
@@ -41,6 +44,12 @@ public enum LoopPerforationMutator implements MethodMutatorFactory {
   public String getName() {
     return name();
   }
+
+  private Set<Integer> loopLines = new HashSet<Integer>();
+
+  public void setLoopLines(Set<Integer> lines) {
+    loopLines = lines;
+  }
 }
 
 class LoopPerforationMethodVisitor extends MethodVisitor {
@@ -49,13 +58,15 @@ class LoopPerforationMethodVisitor extends MethodVisitor {
   private final MutationContext      context;
 
   private int lastLineNumber;
-  private java.util.Set<Integer> loopLines = new java.util.HashSet<Integer>();
+  private Set<Integer> loopLines;
 
   LoopPerforationMethodVisitor(final MethodMutatorFactory factory,
-      final MutationContext context, final MethodVisitor delegateMethodVisitor) {
+      final MutationContext context, final MethodVisitor delegateMethodVisitor,
+      Set<Integer>loopLines) {
     super(Opcodes.ASM5, delegateMethodVisitor);
     this.factory = factory;
     this.context = context;
+    this.loopLines = loopLines;
   }
 
   @Override
@@ -66,16 +77,16 @@ class LoopPerforationMethodVisitor extends MethodVisitor {
 
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-    if (owner.equals("edu/illinois/approximute/LoopLabel") && name.equals("label")) {
+    /*if (owner.equals("edu/illinois/approximute/LoopLabel") && name.equals("label")) {
       this.loopLines.add(this.lastLineNumber);
       return;
-    }
+    }*/
     this.mv.visitMethodInsn(opcode, owner, name, desc, itf);
   }
 
   @Override
   public void visitIincInsn(final int var, final int increment) {
-    if (loopLines.contains(this.lastLineNumber) && (increment == 1 || increment == -1)) {
+    if (loopLines.contains(this.lastLineNumber) && (increment == 1/* || increment == -1*/)) {
       final MutationIdentifier newId = this.context.registerMutation(
           this.factory, "Changed increment from " + increment + " to "
               + increment * 2);
