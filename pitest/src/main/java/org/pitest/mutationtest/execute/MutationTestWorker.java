@@ -204,8 +204,8 @@ public class MutationTestWorker {
       }
 
       final Pitest pit = new Pitest(Collections.singletonList(listener));
-      pit.run(c, createEarlyExitTestGroup(tests));
-      //pit.run(c, tests);
+      //pit.run(c, createEarlyExitTestGroup(tests));
+      pit.run(c, tests);
 
       return createStatusTestPair(listener);
     } catch (final Exception ex) {
