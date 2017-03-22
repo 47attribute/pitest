@@ -48,6 +48,8 @@ import org.pitest.mutationtest.engine.gregor.mutators.experimental.RemoveIncreme
 import org.pitest.mutationtest.engine.gregor.mutators.experimental.RemoveSwitchMutator;
 import org.pitest.mutationtest.engine.gregor.mutators.experimental.SwitchMutator;
 
+import org.pitest.mutationtest.engine.gregor.mutators.DoubleToFloatMutator;
+import org.pitest.mutationtest.engine.gregor.mutators.IntegerToShortMutator;
 import org.pitest.mutationtest.engine.gregor.mutators.LoopPerforationMutator;
 
 public final class Mutator {
@@ -160,7 +162,9 @@ public final class Mutator {
     addGroup("STRONGER", stronger());
     addGroup("ALL", all());
 
-    // Experimental loop perforation mutator
+    // Experimental approximation mutators
+    add("DOUBLETOFLOAT", DoubleToFloatMutator.DOUBLETOFLOAT_MUTATOR);
+    add("INTEGERTOSHORT", IntegerToShortMutator.INTEGERTOSHORT_MUTATOR);
     add("LOOPPERFORATION", LoopPerforationMutator.LOOPPERFORATION_MUTATOR);
   }
 
