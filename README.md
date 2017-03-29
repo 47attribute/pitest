@@ -9,9 +9,24 @@ Read all about it at http://pitest.org
 
 ## Releases
 
-### 1.1.11-SNAPSHOT
+### 1.1.12-SNAPSHOT
 
-Nothing yet
+* #318 - Separate main process code from code sharing client classpath
+* #295 - Ignore abstract TestNG tests
+* #215 - Automatic selection of target classes for maven
+* #314 - Do not fail for maven modules without tests or code
+* #306 - Do not fail when only interfaces are in changeset
+* #325 - Anonymous class in Spock test causing error
+
+### 1.1.11
+
+* #269 - Not possible to break build on 1 mutant
+* #271 - Include method descriptor in line coverage
+* #170 - Exclusion by JUnit runner
+* #291 - Handle empty excludes
+* #287 - Check class hierarchy for annotations
+* #289 - Option to supply classpath from file
+
 
 ### 1.1.10
 

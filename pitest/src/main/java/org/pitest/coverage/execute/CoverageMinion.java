@@ -32,10 +32,14 @@ import org.pitest.coverage.CoverageTransformer;
 import org.pitest.dependency.DependencyExtractor;
 import org.pitest.functional.FCollection;
 import org.pitest.functional.predicate.Predicate;
+import org.pitest.functional.prelude.Prelude;
 import org.pitest.help.PitHelpError;
+import org.pitest.mutationtest.mocksupport.BendJavassistToMyWillTransformer;
+import org.pitest.mutationtest.mocksupport.JavassistInputStreamInterceptorAdapater;
 import org.pitest.testapi.TestUnit;
 import org.pitest.testapi.execute.FindTestUnits;
 import org.pitest.util.ExitCode;
+import org.pitest.util.Glob;
 import org.pitest.util.Log;
 import org.pitest.util.SafeDataInputStream;
 
@@ -47,6 +51,8 @@ public class CoverageMinion {
 
   public static void main(final String[] args) {
 
+    enablePowerMockSupport();
+    
     ExitCode exitCode = ExitCode.OK;
     Socket s = null;
     CoveragePipe invokeQueue = null;
@@ -54,17 +60,17 @@ public class CoverageMinion {
 
       final int port = Integer.parseInt(args[0]);
       s = new Socket("localhost", port);
-
+   
       final SafeDataInputStream dis = new SafeDataInputStream(
           s.getInputStream());
-
+      
       final CoverageOptions paramsFromParent = dis.read(CoverageOptions.class);
-
+  
       Log.setVerbose(paramsFromParent.isVerbose());
-
+    
       invokeQueue = new CoveragePipe(new BufferedOutputStream(
           s.getOutputStream()));
-
+      
       CodeCoverageStore.init(invokeQueue);
 
       LOG.info("Checking environment");
@@ -88,6 +94,7 @@ public class CoverageMinion {
       LOG.log(Level.SEVERE, phe.getMessage());
       exitCode = ExitCode.JUNIT_ISSUE;
     } catch (final Throwable ex) {
+      ex.printStackTrace(System.out);
       LOG.log(Level.SEVERE, "Error calculating coverage. Process will exit.",
           ex);
       exitCode = ExitCode.UNKNOWN_ERROR;
@@ -106,6 +113,14 @@ public class CoverageMinion {
 
     System.exit(exitCode.getCode());
 
+  }
+
+  @SuppressWarnings("unchecked")
+  private static void enablePowerMockSupport() {
+    // Bwahahahahahahaha
+    HotSwapAgent.addTransformer(new BendJavassistToMyWillTransformer(Prelude
+        .or(new Glob("javassist/*")), 
+        JavassistInputStreamInterceptorAdapater.inputStreamAdapterSupplier(JavassistCoverageInterceptor.class)));
   }
 
   private static Predicate<String> convertToJVMClassFilter(

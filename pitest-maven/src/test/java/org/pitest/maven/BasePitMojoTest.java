@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Build;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -35,6 +36,7 @@ import org.pitest.classpath.ClassPath;
 import org.pitest.functional.F;
 import org.pitest.functional.FCollection;
 import org.pitest.functional.predicate.Predicate;
+import org.pitest.functional.predicate.True;
 import org.pitest.mutationtest.config.PluginServices;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -64,6 +66,12 @@ public abstract class BasePitMojoTest extends AbstractMojoTestCase {
         ClassPath.getClassPathElementsAsFiles(), fileToString()));
     when(this.project.getTestClasspathElements()).thenReturn(this.classPath);
     when(this.project.getPackaging()).thenReturn("jar");
+    
+    final Build build = new Build();
+    build.setOutputDirectory("");
+    
+    when(this.project.getBuild()).thenReturn(build);
+    
     when(this.plugins.findToolClasspathPlugins()).thenReturn(
         Collections.emptyList());
     when(this.plugins.findClientClasspathPlugins()).thenReturn(
@@ -99,7 +107,7 @@ public abstract class BasePitMojoTest extends AbstractMojoTestCase {
 
   protected AbstractPitMojo createPITMojo(final String config) throws Exception {
     final AbstractPitMojo pitMojo = new AbstractPitMojo(this.executionStrategy, this.filter,
-        this.plugins);
+        this.plugins, True.<MavenProject>all());
     configurePitMojo(pitMojo, config);
     return pitMojo;
   }
