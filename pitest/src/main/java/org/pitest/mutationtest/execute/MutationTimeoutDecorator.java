@@ -87,14 +87,18 @@ public final class MutationTimeoutDecorator extends TestUnitDecorator {
 
   private Runnable createRunnable(final ClassLoader loader,
       final ResultCollector rc) {
+    final String name = child().getDescription().getQualifiedName();
     return new Runnable() {
 
       @Override
       public void run() {
+        long start = System.currentTimeMillis();
         try {
           child().execute(loader, rc);
         } catch (final Throwable ex) {
           rc.notifyEnd(child().getDescription(), ex);
+        } finally {
+            System.out.println("AUGUST TIME FOR " + name + ": " + (System.currentTimeMillis() - start));
         }
 
       }
