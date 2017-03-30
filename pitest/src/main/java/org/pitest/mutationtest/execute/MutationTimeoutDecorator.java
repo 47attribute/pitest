@@ -55,8 +55,8 @@ public final class MutationTimeoutDecorator extends TestUnitDecorator {
     final FutureTask<?> future = createFutureForChildTestUnit(loader, rc);
     executeFutureWithTimeOut(maxTime, future, rc);
     if (!future.isDone()) {
-      //this.timeOutSideEffect.apply();
       listener.onTestFailure(new org.pitest.testapi.TestResult(this.child().getDescription(), null, org.pitest.testapi.TestUnitState.FINISHED));
+      //this.timeOutSideEffect.apply();
     }
 
   }
@@ -87,7 +87,7 @@ public final class MutationTimeoutDecorator extends TestUnitDecorator {
 
   private Runnable createRunnable(final ClassLoader loader,
       final ResultCollector rc) {
-    final String name = child().getDescription().getQualifiedName();
+    final String testName = child().getDescription().getQualifiedName();
     return new Runnable() {
 
       @Override
@@ -98,7 +98,7 @@ public final class MutationTimeoutDecorator extends TestUnitDecorator {
         } catch (final Throwable ex) {
           rc.notifyEnd(child().getDescription(), ex);
         } finally {
-            System.out.println("AUGUST TIME FOR " + name + ": " + (System.currentTimeMillis() - start));
+            System.out.println("AUGUST TIME FOR " + testName + ": " + (System.currentTimeMillis() - start));
         }
 
       }

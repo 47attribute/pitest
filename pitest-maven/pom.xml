@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>pitest-parent</artifactId>
 		<groupId>org.pitest</groupId>
-		<version>1.1.10-LOOP</version>
+		<version>1.1.12-LOOP</version>
 	</parent>
 	<artifactId>pitest-maven</artifactId>
 	<packaging>maven-plugin</packaging>
@@ -73,7 +73,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.pitest</groupId>
-			<artifactId>pitest</artifactId>
+			<artifactId>pitest-entry</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
