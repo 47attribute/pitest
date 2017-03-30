@@ -149,6 +149,9 @@ public class MutationTestWorker {
         LOG.fine("replaced class with mutant in "
             + (System.currentTimeMillis() - t0) + " ms");
       }
+      LOG.fine("AUGUST MUTANT: " + mutationId.getClassName()
+        + ":" + mutationId.getLineNumber() + ":" + mutationId.getId().getMutator()
+        + ":" + mutationId.getId().getFirstIndex());
       mutationDetected = doTestsDetectMutation(c, relevantTests);
     } else {
       LOG.warning("Mutation " + mutationId + " was not viable ");

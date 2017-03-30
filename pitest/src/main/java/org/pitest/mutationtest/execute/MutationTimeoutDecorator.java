@@ -18,12 +18,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 import org.pitest.extension.common.TestUnitDecorator;
 import org.pitest.functional.SideEffect;
 import org.pitest.mutationtest.TimeoutLengthStrategy;
 import org.pitest.testapi.ResultCollector;
 import org.pitest.testapi.TestUnit;
+import org.pitest.util.Log;
 import org.pitest.util.Unchecked;
 
 public final class MutationTimeoutDecorator extends TestUnitDecorator {
@@ -32,6 +34,8 @@ public final class MutationTimeoutDecorator extends TestUnitDecorator {
   private final SideEffect            timeOutSideEffect;
   private final long                  executionTime;
   private CheckTestHasFailedResultListener listener;
+
+  private static final Logger LOG = Log.getLogger();
 
   public MutationTimeoutDecorator(final TestUnit child,
       final SideEffect timeOutSideEffect,
@@ -98,7 +102,7 @@ public final class MutationTimeoutDecorator extends TestUnitDecorator {
         } catch (final Throwable ex) {
           rc.notifyEnd(child().getDescription(), ex);
         } finally {
-            System.out.println("AUGUST TIME FOR " + testName + ": " + (System.currentTimeMillis() - start));
+            LOG.fine("AUGUST TIME FOR " + testName + ": " + (System.currentTimeMillis() - start));
         }
 
       }
