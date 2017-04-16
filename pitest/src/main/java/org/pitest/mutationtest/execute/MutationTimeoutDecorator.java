@@ -102,7 +102,7 @@ public final class MutationTimeoutDecorator extends TestUnitDecorator {
         } catch (final Throwable ex) {
           rc.notifyEnd(child().getDescription(), ex);
         } finally {
-            LOG.fine("AUGUST TIME FOR " + testName + ": " + (System.currentTimeMillis() - start));
+            LOG.info("AUGUST TIME FOR " + testName + ": " + (System.currentTimeMillis() - start));
         }
 
       }
