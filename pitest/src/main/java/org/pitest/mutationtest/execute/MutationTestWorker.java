@@ -20,12 +20,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.pitest.classinfo.ClassName;
 import org.pitest.classpath.ClassPath;
+import org.pitest.coverage.TestInfo;
 import org.pitest.functional.F3;
 import org.pitest.mutationtest.DetectionStatus;
 import org.pitest.mutationtest.MutationStatusTestPair;
@@ -100,6 +102,12 @@ public class MutationTestWorker {
     if (DEBUG) {
       LOG.fine("mutating method " + mutatedClass.getDetails().getMethod());
     }
+    List<TestInfo> testsinorder = mutationDetails.getTestsInOrder();
+    Collections.sort(testsinorder, new Comparator<TestInfo>() {
+        public int compare(TestInfo t1, TestInfo t2) {
+            return t1.toString().compareTo(t2.toString());
+        }
+    });
     final List<TestUnit> relevantTests = testSource
         .translateTests(mutationDetails.getTestsInOrder());
 
@@ -126,6 +134,12 @@ public class MutationTestWorker {
     } else {
       mutationDetected = handleCoveredMutation(mutationId, mutatedClass,
           relevantTests);
+      StringBuilder buf = new StringBuilder();
+      for (TestUnit t : relevantTests) {
+        buf.append(t.getDescription().getQualifiedName());
+        buf.append(",");
+      }
+      mutationDetected.addRelevantTest(buf.substring(0, buf.length() - 1));
 
     }
     return mutationDetected;
