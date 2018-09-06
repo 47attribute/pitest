@@ -135,12 +135,6 @@ public class MutationTestWorker {
       mutationDetected = handleCoveredMutation(mutationId, mutatedClass,
           relevantTests);
       StringBuilder buf = new StringBuilder();
-      for (TestUnit t : relevantTests) {
-        buf.append(t.getDescription().getQualifiedName());
-        buf.append(",");
-      }
-      mutationDetected.addRelevantTest(buf.substring(0, buf.length() - 1));
-
     }
     return mutationDetected;
   }
